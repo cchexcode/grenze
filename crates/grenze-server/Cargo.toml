@@ -1,0 +1,15 @@
+[package]
+name = "grenze-server"
+version = "0.0.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+anyhow = { workspace = true }
+tokio = { workspace = true, features = ["rt", "rt-multi-thread", "macros", "signal"] }
+axum = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true }
+tower = { workspace = true }
+redis = { workspace = true }
+serde = { workspace = true }

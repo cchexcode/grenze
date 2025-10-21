@@ -1,0 +1,37 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      grenze: {}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  server:
+    build:
+      context: ..
+      dockerfile: docker/rust.Dockerfile
+      args:
+        PACKAGE: grenze-server
+        CRATE_DIR: crates/grenze-server
+    networks:
+      grenze: {}
+    ports:
+      - "8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      RUST_LOG: info
+      RUST_BACKTRACE: "1"
+      REDIS_URL: redis://redis:6379/
+    restart: unless-stopped
+
+networks:
+  grenze:
+    driver: bridge
